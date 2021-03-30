@@ -16,7 +16,7 @@ limitations under the License.
 #include <TensorFlowLite.h>
 
 #include "helper.h"
-#include "image_provider.h"
+// #include "image_provider.h"
 #include "person_detect_model_data.h"
 
 // Globals, used for compatibility with Arduino-style sketches.
