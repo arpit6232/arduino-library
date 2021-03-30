@@ -10,7 +10,6 @@
 #include "tensorflow/lite/version.h"
 
 
-
 constexpr int kNumCols = 96;
 constexpr int kNumRows = 96;
 constexpr int kNumChannels = 1;
@@ -40,3 +39,5 @@ void loop();
 void RespondToDetection(tflite::ErrorReporter* error_reporter,
                         int8_t person_score, int8_t no_person_score);
 
+TfLiteStatus GetImage(tflite::ErrorReporter* error_reporter, int image_width,
+                      int image_height, int channels, int8_t* image_data);
