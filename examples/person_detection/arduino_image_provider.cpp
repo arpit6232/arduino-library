@@ -17,7 +17,16 @@
 #include "Arduino.h"
 #include <TinyMLShield.h>
 
-// Get an image from the camera module
+/**
+ * Return the image cropped to appropriate size and quantized for processing
+ * tflite::ErrorReporter* error_reporter: Logging used for tensorflow 
+ * int image_width: Width of input image
+ * int image_height: Height of the input image
+ * int channels: Channels represent RGBD or Grayscale. All images here are 
+ *                are converted to grayscale for easier processing and less 
+ *                math. 
+ * int8_t* image_data : Pointer to location of image data captured.
+ */
 TfLiteStatus GetImage(tflite::ErrorReporter* error_reporter, int image_width,
                       int image_height, int channels, int8_t* image_data) {
 
@@ -42,10 +51,15 @@ TfLiteStatus GetImage(tflite::ErrorReporter* error_reporter, int image_width,
   int min_y = (144 - 96) / 2;
   int index = 0;
 
-  // Crop 96x96 image. This lowers FOV, ideally we would downsample but this is simpler. 
-  for (int y = min_y; y < min_y + 96; y++) {
-    for (int x = min_x; x < min_x + 96; x++) {
-      image_data[index++] = static_cast<int8_t>(data[(y * 176) + x] - 128); // convert TF input image to signed 8-bit
+  /**
+   * Crop to 96x96 image and convert TF input image to signed 8-bit
+   * The easiest and quickest way to convert from unsigned to
+   * signed 8-bit integers is to subtract 128 from the unsigned value to get a
+   * signed value.
+   */
+  for (int col_idx = min_y; col_idx < min_y + 96; col_idx++) {
+    for (int row_idx = min_x; row_idx < min_x + 96; row_idx++) {
+      image_data[index++] = static_cast<int8_t>(data[(col_idx * 176) + row_idx] - 128);
     }
   }
 

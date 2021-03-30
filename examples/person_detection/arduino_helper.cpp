@@ -12,7 +12,16 @@ const char* kCategoryLabels[kCategoryCount] = {
     "person",
 };
 
-// Flash the blue LED after each inference
+/**
+ * This section will be modified in future sprints to respond
+ * back to the Jetson Nano, rather than detect on the ArduinoBLE
+ * 
+ * Sprint 1: Flash LED on the Arduino to detect a person 
+ * Person Detected -> Blue
+ * No Person Detected -> Red
+ * 
+ * -> Based on the pinout : https://content.arduino.cc/assets/NANO33BLE_V2.0_sch.pdf
+ */
 void RespondToDetection(tflite::ErrorReporter* error_reporter,
                         int8_t person_score, int8_t no_person_score) {
   static bool is_initialized = false;
@@ -23,9 +32,6 @@ void RespondToDetection(tflite::ErrorReporter* error_reporter,
     pinMode(LEDB, OUTPUT);
     is_initialized = true;
   }
-
-  // Note: The RGB LEDs on the Arduino Nano 33 BLE
-  // Sense are on when the pin is LOW, off when HIGH.
 
   // Switch the person/not person LEDs off
   digitalWrite(LEDG, HIGH);

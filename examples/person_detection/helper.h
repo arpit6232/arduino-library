@@ -7,10 +7,12 @@
 #include "tensorflow/lite/version.h"
 
 
+/**
+ * Camera Parameters
+ */
 constexpr int kNumCols = 96;
 constexpr int kNumRows = 96;
 constexpr int kNumChannels = 1;
-
 constexpr int kMaxImageSize = kNumCols * kNumRows * kNumChannels;
 
 constexpr int kCategoryCount = 2;
@@ -33,5 +35,15 @@ void loop();
 #endif
 
 
+/**
+ * This section will be modified in future sprints to respond
+ * back to the Jetson Nano, rather than detect on the ArduinoBLE
+ * 
+ * Sprint 1: Flash LED on the Arduino to detect a person 
+ * Person Detected -> Blue
+ * No Person Detected -> Red
+ * 
+ * -> Based on the pinout : https://content.arduino.cc/assets/NANO33BLE_V2.0_sch.pdf
+ */
 void RespondToDetection(tflite::ErrorReporter* error_reporter,
                         int8_t person_score, int8_t no_person_score);
