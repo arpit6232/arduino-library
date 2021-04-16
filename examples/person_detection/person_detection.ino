@@ -19,6 +19,7 @@ limitations under the License.
 #include "image_provider.h"
 #include "person_detect_model_data.h"
 
+
 /**
  * Had to include a namespace to prevent err's
  */
@@ -34,6 +35,9 @@ TfLiteTensor* input = nullptr;
 constexpr int kTensorArenaSize = 136 * 1024;
 static uint8_t tensor_arena[kTensorArenaSize];
 }  // namespace
+
+char chr;
+bool status;
 
 /**
  * All arduino codes need a 
@@ -54,6 +58,7 @@ void setup() {
                          "Model provided is schema version %d not equal "
                          "to supported version %d.",
                          model->version(), TFLITE_SCHEMA_VERSION);
+
     return;
   }
 
@@ -87,31 +92,99 @@ void setup() {
   }
 
   input = interpreter->input(0);
+  chr = 'n';
+  status = true;
+
+  Serial.begin(9600);
 }
 
 
 void loop() {
+
+  if (Serial.available())
+  {
+      while(status) {
+        chr = Serial.read();
+          switch(chr) {
+            
+            case 'a': /* Acknowledge to isConnected() API*/
+                    if (Serial.available()) {
+                      TF_LITE_REPORT_ERROR(error_reporter, "acknowledge");
+                    }
+                    status = true;
+                    break;
+
+            case 's': /* Display Output Once to executeSingle() API */
+              if (Serial.available()) {
+                
+                    // Get image from provider.
+                    if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels,
+                                              input->data.int8)) {
+                      TF_LITE_REPORT_ERROR(error_reporter, "Image capture failed.");
+                    }
+                  
+                    // Run the model on this input and make sure it succeeds.
+                    if (kTfLiteOk != interpreter->Invoke()) {
+                      TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed.");
+                    }
+                  
+                    TfLiteTensor* output = interpreter->output(0);
+                  
+                    // Process the inference results.
+                    int8_t person_score = output->data.uint8[kPersonIndex];
+                    int8_t no_person_score = output->data.uint8[kNotAPersonIndex];
+                    RespondToDetection(error_reporter, person_score, no_person_score);
+                    
+              }
+              status = true;
+              break;  
+              
+
+          case 'c': /* Display Output Continniously to executeContinuous() API */
+            while(chr != 'x') {
+                 if (Serial.available()) {
+                  
+                      // Get image from provider.
+                      if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels,
+                                                input->data.int8)) {
+                        TF_LITE_REPORT_ERROR(error_reporter, "Image capture failed.");
+                      }
+                    
+                      // Run the model on this input and make sure it succeeds.
+                      if (kTfLiteOk != interpreter->Invoke()) {
+                        TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed.");
+                      }
+                    
+                      TfLiteTensor* output = interpreter->output(0);
+                    
+                      // Process the inference results.
+                      int8_t person_score = output->data.uint8[kPersonIndex];
+                      int8_t no_person_score = output->data.uint8[kNotAPersonIndex];
+                      RespondToDetection(error_reporter, person_score, no_person_score);
   
-  /**
-   * Get the appropriate image: 
-   * Modified version of https://github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/micro/examples/person_detection/esp/image_provider.cc
-   */
-  if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels, input->data.int8)) {
-    TF_LITE_REPORT_ERROR(error_reporter, "Image capture failed.");
-  }
+                      chr = Serial.read();
+                      if(chr == 'x') {
+                        status = false;
+                        break;
+                      }
+                      
+                  } /* End of if (Serial.available()) */ 
+              } /* End of continious output of while loop */
 
-  /**
-   * Run the neural network model
-   */
-  if (kTfLiteOk != interpreter->Invoke()) {
-    TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed.");
-  }
+          case 'x': /* Stop Program and return */
+              if (Serial.available()) {
+                TF_LITE_REPORT_ERROR(error_reporter, "acknowledge");
+              }
+              status = false;
+              return;
 
-  /**
-   * Store the output
-   */
-  TfLiteTensor* output = interpreter->output(0);
-
-  /* Result */
-  RespondToDetection(error_reporter, output->data.uint8[kPersonIndex], output->data.uint8[kNotAPersonIndex]);
+          default:
+              if (Serial.available()) {
+                TF_LITE_REPORT_ERROR(error_reporter, "Invalid Serial Input Flag");
+              }
+              status = true;
+              break;
+      } /* End of Switch {} */
+  } /* End of status  */
+    
 }
