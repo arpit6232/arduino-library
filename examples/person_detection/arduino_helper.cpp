@@ -52,14 +52,8 @@ void RespondToDetection(tflite::ErrorReporter* error_reporter,
     digitalWrite(LEDR, LOW);
   }
 
-  if(person_score > no_person_score) {
-    TF_LITE_REPORT_ERROR(error_reporter, "true");
-  } else {
-    TF_LITE_REPORT_ERROR(error_reporter, "false");
-  }
-
-  // TF_LITE_REPORT_ERROR(error_reporter, "Person score: %d No person score: %d",
-  //                      person_score, no_person_score);
+  TF_LITE_REPORT_ERROR(error_reporter, "Person score: %d No person score: %d",
+                       person_score, no_person_score);
 }
 
 #endif  // ARDUINO_EXCLUDE_CODE
