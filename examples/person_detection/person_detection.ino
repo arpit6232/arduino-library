@@ -103,7 +103,7 @@ void loop() {
 
   if (Serial.available()) {
 
-      while(status) {
+//      while(status) {
 
         chr = Serial.read();
           switch(chr) {
@@ -142,7 +142,7 @@ void loop() {
 
             case 'c': /* Display Output Continniously to executeContinuous() API */
               while(chr != 'x') {
-                  if (Serial.available()) {
+                        chr = Serial.read();
                     
                         // Get image from provider.
                         if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels,
@@ -161,25 +161,18 @@ void loop() {
                         int8_t person_score = output->data.uint8[kPersonIndex];
                         int8_t no_person_score = output->data.uint8[kNotAPersonIndex];
                         RespondToDetection(error_reporter, person_score, no_person_score);
-    
-                        chr = Serial.read();
-                        if(chr == 'x') {
-                          status = false;
-                          break;
-                        }
                         
-                    } /* End of if (Serial.available()) */ 
                 } /* End of continious output of while loop */
 
             case 'x': /* Stop Program and return */
                 if (Serial.available()) {
-                  TF_LITE_REPORT_ERROR(error_reporter, "acknowledge");
+                  TF_LITE_REPORT_ERROR(error_reporter, "idle state machine");
                 }
                 status = false;
                 return;
           } /* End of switch case */
 
-      } /* End of while loop */
+//      } /* End of while loop */
       
   } /* End of if (Serial.available())  */
     
