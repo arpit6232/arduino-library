@@ -139,8 +139,8 @@ void loop() {
               break;  
 
             case 'c': /* Display Output Continniously to executeContinuous() API */
-              while(chr != 'x') {
-                        chr = Serial.read();
+//              while(chr != 'x') {/
+//                        chr = Serial.read();/
                     
                         // Get image from provider.
                         if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels,
@@ -160,7 +160,7 @@ void loop() {
                         int8_t no_person_score = output->data.uint8[kNotAPersonIndex];
                         RespondToDetection(error_reporter, person_score, no_person_score);
                         
-                } /* End of continious output of while loop */
+//                } /* End of continious output of while loop *//
               break;
 
             case 'x': /* Stop Program and return */
