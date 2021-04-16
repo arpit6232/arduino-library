@@ -103,8 +103,6 @@ void loop() {
 
   if (Serial.available()) {
 
-//      while(status) {
-
         chr = Serial.read();
           switch(chr) {
             
@@ -163,6 +161,7 @@ void loop() {
                         RespondToDetection(error_reporter, person_score, no_person_score);
                         
                 } /* End of continious output of while loop */
+              break;
 
             case 'x': /* Stop Program and return */
                 if (Serial.available()) {
@@ -171,8 +170,6 @@ void loop() {
                 status = false;
                 return;
           } /* End of switch case */
-
-//      } /* End of while loop */
       
   } /* End of if (Serial.available())  */
     
