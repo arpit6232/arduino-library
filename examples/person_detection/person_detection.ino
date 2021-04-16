@@ -114,7 +114,6 @@ void loop() {
                     break;
 
             case 's': /* Display Output Once to executeSingle() API */
-              if (Serial.available()) {
                 
                     // Get image from provider.
                     if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels,
@@ -134,13 +133,11 @@ void loop() {
                     int8_t no_person_score = output->data.uint8[kNotAPersonIndex];
                     RespondToDetection(error_reporter, person_score, no_person_score);
                     
-              }
               status = true;
               break;  
 
             case 'c': /* Display Output Continniously to executeContinuous() API */
-//              while(chr != 'x') {/
-//                        chr = Serial.read();/
+              while(chr != 'x') {
                     
                         // Get image from provider.
                         if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels,
@@ -160,7 +157,7 @@ void loop() {
                         int8_t no_person_score = output->data.uint8[kNotAPersonIndex];
                         RespondToDetection(error_reporter, person_score, no_person_score);
                         
-//                } /* End of continious output of while loop *//
+                } /* End of continious output of while loop */
               break;
 
             case 'x': /* Stop Program and return */
@@ -168,7 +165,6 @@ void loop() {
                   TF_LITE_REPORT_ERROR(error_reporter, "idle state machine");
                 }
                 status = false;
-                return;
           } /* End of switch case */
       
   } /* End of if (Serial.available())  */
