@@ -104,7 +104,7 @@ void loop() {
   if (Serial.available()) {
 
 //      while(status) {
-
+        chr = 'z';
         chr = Serial.read();
           switch(chr) {
             
@@ -113,6 +113,7 @@ void loop() {
                       TF_LITE_REPORT_ERROR(error_reporter, "acknowledge");
                     }
                     status = true;
+                    chr = 'z';
                     break;
 
             case 's': /* Display Output Once to executeSingle() API */
@@ -138,6 +139,7 @@ void loop() {
                     
               }
               status = true;
+              chr = 'z';
               break;  
 
             case 'c': /* Display Output Continniously to executeContinuous() API */
@@ -163,13 +165,14 @@ void loop() {
                         RespondToDetection(error_reporter, person_score, no_person_score);
                         
                 } /* End of continious output of while loop */
-
+                chr = 'z';
+                break;
             case 'x': /* Stop Program and return */
                 if (Serial.available()) {
                   TF_LITE_REPORT_ERROR(error_reporter, "idle state machine");
                 }
+                chr = 'z';
                 status = false;
-                return;
           } /* End of switch case */
 
 //      } /* End of while loop */
