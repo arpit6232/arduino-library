@@ -45,16 +45,17 @@ void RespondToDetection(tflite::ErrorReporter* error_reporter,
   // Switch on the green LED when a person is detected,
   // the red when no person is detected
   if (person_score > no_person_score) {
+    TF_LITE_REPORT_ERROR(error_reporter,"true");
     digitalWrite(LEDG, LOW);
     digitalWrite(LEDR, HIGH);
   } else {
+    TF_LITE_REPORT_ERROR(error_reporter,"false");
     digitalWrite(LEDG, HIGH);
     digitalWrite(LEDR, LOW);
   }
 
-  TF_LITE_REPORT_ERROR(error_reporter, "Person score: %d No person score: %d",
-                       person_score, no_person_score);
+//  TF_LITE_REPORT_ERROR(error_reporter, "Person score: %d No person score: %d",
+//                       person_score, no_person_score);
 }
 
 #endif  // ARDUINO_EXCLUDE_CODE
-
