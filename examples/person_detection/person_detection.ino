@@ -177,19 +177,10 @@ void loop() {
                 }
                 status = false;
                 return;
-
-            default:
-                if (Serial.available()) {
-                  TF_LITE_REPORT_ERROR(error_reporter, "Invalid Serial Input Flag");
-                }
-                status = true;
-                break;
-
-          }
-
+          } /* End of switch case */
 
       } /* End of while loop */
       
   } /* End of if (Serial.available())  */
     
-}
+} /* End of loop */
