@@ -103,7 +103,6 @@ void loop() {
 
   if (Serial.available()) {
 
-//      while(status) {
         chr = 'z';
         chr = Serial.read();
           switch(chr) {
@@ -142,31 +141,31 @@ void loop() {
               chr = 'z';
               break;  
 
-            case 'c': /* Display Output Continniously to executeContinuous() API */
-              while(chr != 'x') {
-                        chr = Serial.read();
-                    
-                        // Get image from provider.
-                        if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels,
-                                                  input->data.int8)) {
-                          TF_LITE_REPORT_ERROR(error_reporter, "Image capture failed.");
-                        }
-                      
-                        // Run the model on this input and make sure it succeeds.
-                        if (kTfLiteOk != interpreter->Invoke()) {
-                          TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed.");
-                        }
-                      
-                        TfLiteTensor* output = interpreter->output(0);
-                      
-                        // Process the inference results.
-                        int8_t person_score = output->data.uint8[kPersonIndex];
-                        int8_t no_person_score = output->data.uint8[kNotAPersonIndex];
-                        RespondToDetection(error_reporter, person_score, no_person_score);
-                        
-                } /* End of continious output of while loop */
-                chr = 'z';
-                break;
+//            case 'c': /* Display Output Continniously to executeContinuous() API */
+//              while(chr != 'x') {
+//                        chr = Serial.read();
+//                    
+//                        // Get image from provider.
+//                        if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels,
+//                                                  input->data.int8)) {
+//                          TF_LITE_REPORT_ERROR(error_reporter, "Image capture failed.");
+//                        }
+//                      
+//                        // Run the model on this input and make sure it succeeds.
+//                        if (kTfLiteOk != interpreter->Invoke()) {
+//                          TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed.");
+//                        }
+//                      
+//                        TfLiteTensor* output = interpreter->output(0);
+//                      
+//                        // Process the inference results.
+//                        int8_t person_score = output->data.uint8[kPersonIndex];
+//                        int8_t no_person_score = output->data.uint8[kNotAPersonIndex];
+//                        RespondToDetection(error_reporter, person_score, no_person_score);
+//                        
+//                } /* End of continious output of while loop */
+//                chr = 'z';
+//                break;
             case 'x': /* Stop Program and return */
                 if (Serial.available()) {
                   TF_LITE_REPORT_ERROR(error_reporter, "idle state machine");
@@ -174,8 +173,6 @@ void loop() {
                 chr = 'z';
                 status = false;
           } /* End of switch case */
-
-//      } /* End of while loop */
       
   } /* End of if (Serial.available())  */
     
